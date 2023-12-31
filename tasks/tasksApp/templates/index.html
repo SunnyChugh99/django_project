@@ -90,7 +90,6 @@
 
         <button type="button" onclick="createTask()">Submit Task</button>
     </div>
-    <h2 id="allTasksHeading" class="task-form">All Tasks</h2>
     <ul id="taskList" class="task-form"></ul>
 
     <div id="updateForm" class="update-form task-form">
@@ -243,62 +242,71 @@
 
         // Function to fetch and display all tasks
         function fetchTaskList() {
-            // Get the token from the input field
-            const token = document.getElementById('token').value;
+    // Get the token from the input field
+    const token = document.getElementById('token').value;
 
-            fetch('http://127.0.0.1:8000/tasks/', {
-                headers: {
-                    'Authorization': `Bearer ${token}`, // Include the token in the request header
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
+    fetch('http://127.0.0.1:8000/tasks/', {
+        headers: {
+            'Authorization': `Bearer ${token}`, // Include the token in the request header
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = ''; // Clear the existing list
 
-                    const taskList = document.getElementById('taskList');
-                    taskList.innerHTML = ''; // Clear the existing list
+        if (data.length === 0) {
+            // If there are no tasks, hide both update and create forms
+            toggleUpdateFormVisibility(false);
+            toggleCreateForm(false);
 
-                    data.forEach(task => {
-                        if (!task || !task.id) {
-                            console.error('Invalid task object:', task);
-                            return; // Skip invalid tasks
-                        }
+        } else {
+            data.forEach(task => {
+                if (!task || !task.id) {
+                    console.error('Invalid task object:', task);
+                    return; // Skip invalid tasks
+                }
 
-                        const listItem = document.createElement('li');
-                        listItem.className = 'task-item';
+                const listItem = document.createElement('li');
+                listItem.className = 'task-item';
 
-                        // Display task name and status in one line
-                        listItem.textContent = `${task.title} - ${task.status}`;
+                // Display task name and status in one line
+                listItem.textContent = `${task.title} - ${task.status}`;
 
-                        // Add buttons for updating and deleting tasks
-                        const buttonsContainer = document.createElement('div');
-                        buttonsContainer.className = 'task-buttons';
+                // Add buttons for updating and deleting tasks
+                const buttonsContainer = document.createElement('div');
+                buttonsContainer.className = 'task-buttons';
 
-                        const updateButton = document.createElement('button');
-                        updateButton.textContent = 'Update';
-                        updateButton.addEventListener('click', function () {
-                            openUpdateForm(task);
-                        });
-                        buttonsContainer.appendChild(updateButton);
-
-                        const deleteButton = document.createElement('button');
-                        deleteButton.textContent = 'Delete';
-                        deleteButton.onclick = () => deleteTask(task.id);
-                        buttonsContainer.appendChild(deleteButton);
-
-                        listItem.appendChild(buttonsContainer);
-
-                        // Store the task ID in a data attribute
-                        listItem.dataset.taskId = task.id;
-
-                        taskList.appendChild(listItem);
-                        toggleUpdateFormVisibility(false);
-                        toggleCreateForm(false);
-                    });
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
+                const updateButton = document.createElement('button');
+                updateButton.textContent = 'Update';
+                updateButton.addEventListener('click', function () {
+                    openUpdateForm(task);
                 });
+                buttonsContainer.appendChild(updateButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteTask(task.id);
+                buttonsContainer.appendChild(deleteButton);
+
+                listItem.appendChild(buttonsContainer);
+
+                // Store the task ID in a data attribute
+                listItem.dataset.taskId = task.id;
+
+                taskList.appendChild(listItem);
+            });
+
+            // If there are tasks, hide only the create form
+            toggleCreateForm(false);
+                        toggleUpdateFormVisibility(false);
+
         }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
 
         // Function to toggle the visibility of the update form
         function toggleUpdateFormVisibility(isVisible) {
@@ -337,7 +345,6 @@
 
             // Hide the task list
             document.getElementById('taskList').style.display = 'none';
-            document.getElementById('allTasksHeading').style.display = 'none';
 
             // Hide the headings
             document.querySelector('h1').style.display = 'none';

@@ -20,9 +20,11 @@ Task Manager is a web application built with Django for managing tasks.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/task-manager.git
+  git clone https://github.com/SunnyChugh99/django_project.git
+
 2 - Navigate to the project directory:
-cd task-manager
+cd django_project/
+
 
 
 3 - Create a virtual environment:
@@ -38,13 +40,23 @@ source env/bin/activate
 
 
 5 - Install dependencies:
-pip install -r requirements.txt
+A- Navigate to directory where setup.py is located
+- cd tasks/tasks
+B - Install packages
+- pip install -e .
 
 6 - Apply migrations:
+python manage.py makemigrations
 python manage.py migrate
 
-7 - Run the development server:
+
+7 - Create superuser:
+python manage.py createsuperuser
+(add user - test, email- test@gmail.com, password- test)
+
+8 - Run the development server:
 python manage.py runserver
 
-8 - Open your browser and go to http://127.0.0.1:8000/ to access the application.
-
+9 - Open your browser and go to http://127.0.0.1:8000/ to access the application.
+enter the credentials you created at 7th step.
+(example: username - test, password - test)
